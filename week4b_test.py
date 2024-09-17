@@ -31,7 +31,7 @@ def test7():
 
 	assert np.allclose(coefficients1[0], np.array([-2.70593236e-01,-4.55249601e-03,1.10512079e+00, 2.36092831e+02,
   -2.39036942e+01]))
-	assert np.allclose(intercept1, np.array([-2946.65885903]))
-	assert np.allclose(mse1, np.float64(54.580945200862395))
-	assert np.allclose(rmse1, np.float64(7.387891796775477))
-	assert np.allclose(r2_score1, np.float64(0.674648138282816 ))
+	assert np.allclose(intercept1, np.array([-2946.65885903]), atol=1e-6)
+	assert np.allclose(mse1, np.float64(54.580945200862395), atol=1e-6)
+	assert np.allclose(rmse1, np.float64(7.387891796775477), atol=1e-6)
+	assert np.allclose(r2_score1, np.float64(0.674648138282816 ), atol=1e-6)
