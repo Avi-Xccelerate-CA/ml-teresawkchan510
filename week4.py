@@ -22,6 +22,10 @@ from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 import math
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+import numpy as np
 
 
 #Question1
@@ -32,6 +36,7 @@ def load():
 	'''
 	#SOLUTION START( ~ 1 line of code)
 	
+	df = pd.read_csv('data/realestate.csv')
 
 	#SOLUTION END
 	return df
@@ -53,6 +58,7 @@ def getShape():
 	'''
 	#SOLUTION START( ~ 1 line of code)
 	
+	return df.shape
 
 	#SOLUTION END
 
@@ -66,6 +72,7 @@ def getInfo():
 	'''
 	#SOLUTION START( ~ 1 line of code)
 	
+	return df.info()
 
 	#SOLUTION END
 
@@ -89,6 +96,7 @@ def checkNull():
 
 	#SOLUTION START( ~ 1 line of code)
 	
+	return df.isnull().sum()
 
 	#SOLUTION END
 
@@ -102,6 +110,8 @@ def getStatistic():
 	'''
 
 	#SOLUTION START( ~ 1 line of code)
+
+	return df.describe()
 
 	#SOLUTION END
 
@@ -127,6 +137,8 @@ def split():
 	'''
 	#SOLUTION START( ~ 1-2 line of code)
 
+	return train_test_split(df_X, df_y, test_size=0.2, random_state=42)
+
 	#SOLUTION END
 
 X_train, X_test, y_train, y_test = split()
@@ -142,29 +154,55 @@ def makeModel():
 
 	# Create linear regression object
 	#SOLUTION START(~ 1 line of code)
-
+	model = linear_model.LinearRegression()
 	#SOLUTION END
 
 	# Train the model using the training sets
 	#SOLUTION START(~ 1 line of code)
-
+	model.fit(X_train, y_train)
 
 	#SOLUTION END
 
 	# Make predictions using the testing set
 	#SOLUTION START(~ 1 line of code)
-
+	y_pred = model.predict(X_test)
 	#SOLUTION END
 
 	#fill in the blanks, how to get the value of coefficients, intercept, mse, rmse, r2score
 	#SOLUTION START
 	#The coefficients i.e. the slope
-	coefficients = #YOUR ANSWER
-	intercept = #YOUR ANSWER
-	mse = #YOUR ANSWER
-	rmse = #YOUR ANSWER
-	r2score = #YOUR ANSWER
+	coefficients = np.array(model.coef_)
+	intercept = np.array([model.intercept_[0]])
+	mse = np.float64(mean_squared_error(y_test, y_pred))
+	rmse = np.float64(math.sqrt(mse))
+	r2score = np.float64(r2_score(y_test, y_pred))
 	#SOLUTION END
 
+	return(coefficients, intercept, mse, rmse, r2score)
 
-	return (coefficients, intercept, mse, rmse, r2score)
+# Scatter Plot of Actual vs Predicted Values
+def plot_actual_vs_predicted(y_test, y_pred):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(y_test, y_pred, alpha=0.5)
+    plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
+    plt.title('Actual vs Predicted Values')
+    plt.xlabel('Actual Values')
+    plt.ylabel('Predicted Values')
+    plt.grid()
+    plt.show()
+
+# Pair Plot for Feature Relationships
+def plot_pair_plot(df):
+    sns.pairplot(df, diag_kind='kde')
+    plt.suptitle('Pair Plot of Features', y=1.02)
+    plt.show()
+
+coefficients, intercept, mse, rmse, r2score = makeModel()
+
+# Plot the actual vs predicted values
+y_pred = linear_model.LinearRegression().fit(X_train, y_train).predict(X_test)
+plot_actual_vs_predicted(y_test, y_pred)
+
+# Plot pair plot for feature relationships
+warnings.filterwarnings("ignore", category=FutureWarning)
+plot_pair_plot(df)
